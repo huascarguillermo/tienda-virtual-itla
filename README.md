@@ -1,8 +1,19 @@
-# React + Vite
+# Tienda Online
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Resources:
 
-Currently, two official plugins are available:
+### Eslint configuration for Reactjs
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[Eslint & Prettier configuration for React js](https://www.youtube.com/watch?v=3BHXuZvI4FI&t=1350s)
+
+### NextUI Library
+
+[Documentation](https://nextui.org/)
+
+### React Router Dom
+
+[React Router DOM documentation](https://reactrouter.com/en/main/start/tutorial)
+
+### NextUI with React Router DOM configuration
+
+[Documentation](https://nextui.org/docs/guide/routing#react-router)

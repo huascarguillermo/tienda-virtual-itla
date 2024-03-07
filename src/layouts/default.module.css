@@ -1,0 +1,9 @@
+.link {
+    border: 2px solid #8ecae6;
+
+    transition: all 0.25s ease-in-out;
+}
+
+.link:hover {
+    background-color: #8ecae6;
+}

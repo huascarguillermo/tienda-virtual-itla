@@ -1,9 +1,13 @@
-.link {
-    border: 2px solid #8ecae6;
+.mainContainer {
+	width: min(calc(100% - 3rem), 80rem);
+	margin-inline: auto;
+}
 
-    transition: all 0.25s ease-in-out;
+.link {
+	border: 2px solid #8ecae6;
+	transition: all 0.25s ease-in-out;
 }
 
 .link:hover {
-    background-color: #8ecae6;
+	background-color: #8ecae6;
 }

@@ -36,7 +36,7 @@ const DefaultLayout = () => {
 					</Link>
 				</NavbarBrand>
 				<NavbarContent as='div' justify='end'>
-					<Dropdown placement='bottom-end'>
+					{/* <Dropdown placement='bottom-end'>
 						<DropdownTrigger>
 							<Avatar
 								isBordered
@@ -56,11 +56,12 @@ const DefaultLayout = () => {
 								Log Out
 							</DropdownItem>
 						</DropdownMenu>
-					</Dropdown>
+					</Dropdown> */}
+					<p>JC</p>
 				</NavbarContent>
 			</Navbar>
 
-			<main>
+			<main className={styles.mainContainer}>
 				<Outlet />
 			</main>
 		</>

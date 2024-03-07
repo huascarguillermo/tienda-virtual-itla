@@ -20,7 +20,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-	const navigate = () => useNavigate();
+	const navigate = useNavigate();
 
 	return (
 		<NextUIProvider navigate={navigate}>

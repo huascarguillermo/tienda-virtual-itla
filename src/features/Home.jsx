@@ -1,5 +1,9 @@
+import { Input, Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { getProducts } from '../services/fakeStoreApi';
+import { Item, ItemSkeleton, SearchIcon } from '../components';
+import styles from './Home.module.css';
+import range from '../utils/range';
 
 function Home() {
 	const [products, setProducts] = useState([]);
@@ -30,21 +34,44 @@ function Home() {
 				setIsLoading(false);
 			});
 	}, []);
-	return (
-		<section>
-			<h2>Products:</h2>
 
-			{isLaoding ? (
-				<p>Loading...</p>
-			) : (
-				<ul>
-					{products.map((product, index) => (
-						<li key={product.id}>
-							<h2>{`${index + 1}-${product.title}`}</h2>
-						</li>
+	return (
+		<section className={styles.sectionContainer}>
+			<header className='py-4'>
+				<Input
+					type='text'
+					placeholder='Search for products'
+					startContent={
+						<SearchIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
+					}
+					className={styles.searchInput}
+				/>
+				<Select label='Category' className='max-w-xs'>
+					{range(5).map(el => (
+						<SelectItem key={el} value={el}>
+							{`${el}`}
+						</SelectItem>
 					))}
-				</ul>
-			)}
+				</Select>
+				<Select label='Sort' className='max-w-xs'>
+					{range(2).map(el => (
+						<SelectItem key={el} value={el}>
+							{`${el}`}
+						</SelectItem>
+					))}
+				</Select>
+			</header>
+			<main className={styles.wrapper}>
+				{isLaoding ? (
+					<ItemSkeleton />
+				) : (
+					<>
+						{products.map(product => (
+							<Item key={product.id} item={product} />
+						))}
+					</>
+				)}
+			</main>
 		</section>
 	);
 }

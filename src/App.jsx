@@ -5,11 +5,19 @@ import {
 } from 'react-router-dom';
 import { NextUIProvider } from '@nextui-org/react';
 import DefaultLayout from './layouts/default';
-import { Cart, Checkout, Home, Login, Register } from './features/index.js';
+import {
+	Cart,
+	Checkout,
+	ErrorPage,
+	Home,
+	Login,
+	Register
+} from './features/index.js';
 
 const router = createBrowserRouter([
 	{
 		element: <DefaultLayout />,
+		errorElement: <ErrorPage />,
 		children: [
 			{ path: '/', element: <Home /> },
 			{ path: '/login', element: <Login /> },

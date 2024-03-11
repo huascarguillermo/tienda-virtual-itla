@@ -2,22 +2,27 @@ import { Input, Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { getProducts } from '../services/fakeStoreApi';
 import { Item, ItemSkeleton, SearchIcon } from '../components';
+import { CATEGORIES, SORT } from '../utils/constants';
+import { useDebounce } from 'use-debounce';
 import styles from './Home.module.css';
-import range from '../utils/range';
 
 function Home() {
 	const [products, setProducts] = useState([]);
 	const [isLaoding, setIsLoading] = useState(false);
+	const [searchProduct, setSearchProduct] = useState('');
+	const [categorySelected, setCategorySelected] = useState('');
+	const [sortSelected, setSortSelected] = useState('');
+	const [filteredProducts, setFilteredProducts] = useState([]);
+	const [value] = useDebounce(searchProduct, 500);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		getProducts()
+		getProducts(categorySelected, sortSelected)
 			.then(res => {
 				const data = res.data;
-				setProducts(data);
 
-				console.log(data);
+				setProducts(data);
 			})
 			.catch(err => {
 				if (err.response) {
@@ -33,7 +38,23 @@ function Home() {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, []);
+	}, [categorySelected, sortSelected]);
+
+	const filterProducts = data => {
+		let filtered = data;
+
+		if (value) {
+			filtered = filtered.filter(product =>
+				product.title.toLowerCase().includes(value.toLowerCase())
+			);
+		}
+
+		setFilteredProducts(filtered);
+	};
+
+	useEffect(() => {
+		filterProducts(products);
+	}, [value, products]);
 
 	return (
 		<section className={styles.sectionContainer}>
@@ -45,18 +66,30 @@ function Home() {
 						<SearchIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
 					}
 					className={styles.searchInput}
+					value={searchProduct}
+					onChange={e => setSearchProduct(e.target.value)}
 				/>
-				<Select label='Category' className='max-w-xs'>
-					{range(5).map(el => (
-						<SelectItem key={el} value={el}>
-							{`${el}`}
+				<Select
+					label='Category'
+					className='max-w-xs'
+					value={categorySelected}
+					onChange={e => setCategorySelected(e.target.value)}
+				>
+					{CATEGORIES.map(cat => (
+						<SelectItem key={cat.value} value={cat.value}>
+							{cat.label}
 						</SelectItem>
 					))}
 				</Select>
-				<Select label='Sort' className='max-w-xs'>
-					{range(2).map(el => (
-						<SelectItem key={el} value={el}>
-							{`${el}`}
+				<Select
+					label='Sort'
+					className='max-w-xs'
+					value={sortSelected}
+					onChange={e => setSortSelected(e.target.value)}
+				>
+					{SORT.map(sort => (
+						<SelectItem key={sort.value} value={sort.value}>
+							{sort.label}
 						</SelectItem>
 					))}
 				</Select>
@@ -66,7 +99,7 @@ function Home() {
 					<ItemSkeleton />
 				) : (
 					<>
-						{products.map(product => (
+						{filteredProducts.map(product => (
 							<Item key={product.id} item={product} />
 						))}
 					</>

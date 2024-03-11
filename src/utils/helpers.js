@@ -12,3 +12,16 @@ export const formatToCurrency = value => {
 
 	return output;
 };
+
+export function debounce(callback, interval) {
+	let duration = 0
+	let id
+	return function () {
+		if (duration <= 0) {
+			duration = interval
+			clearInterval(id)
+			id = setInterval(() => { duration -= 100 }, 100)
+			return callback()
+		}
+	}
+}

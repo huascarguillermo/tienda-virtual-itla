@@ -17,3 +17,7 @@
 ### NextUI with React Router DOM configuration
 
 [Documentation](https://nextui.org/docs/guide/routing#react-router)
+
+### UseDebounce
+
+[Documentation](https://www.npmjs.com/package/use-debounce)

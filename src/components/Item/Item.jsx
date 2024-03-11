@@ -5,7 +5,7 @@ import CartIcon from '../CartIcon';
 import styles from './Item.module.css';
 
 function Item({ item }) {
-	const { title, description, image, price } = item;
+	const { title, image, price } = item;
 
 	const priceFormat = formatToCurrency(price);
 

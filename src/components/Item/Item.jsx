@@ -1,13 +1,33 @@
-// import React from 'react';
+import { useState } from 'react';
 import { Card, CardBody, CardFooter, Image, Button } from '@nextui-org/react';
 import { formatToCurrency } from '../../utils/helpers';
 import CartIcon from '../CartIcon';
 import styles from './Item.module.css';
 
-function Item({ item }) {
-	const { title, image, price } = item;
+function Item({ item, handleAddToCart }) {
+	const [quantity, setQuantity] = useState(1);
 
+	const { title, image, price } = item;
 	const priceFormat = formatToCurrency(price);
+
+	const addQuantity = () => {
+		const newQuantity = quantity + 1;
+
+		setQuantity(newQuantity);
+	};
+
+	const subtractQuantity = () => {
+		if (quantity > 1) {
+			const newQuantity = quantity - 1;
+			setQuantity(newQuantity);
+		}
+	};
+
+	const addToCart = () => {
+		handleAddToCart(item, quantity);
+
+		setQuantity(1);
+	};
 
 	return (
 		<Card shadow='sm' className={styles.card}>
@@ -33,7 +53,13 @@ function Item({ item }) {
 				</div>
 				<p className='text-default-500'>{priceFormat}</p>
 				<div className={styles.actionsWrapper}>
-					<Button size='sm' isIconOnly color='primary'>
+					<Button
+						size='sm'
+						isIconOnly
+						color='primary'
+						onClick={subtractQuantity}
+						isDisabled={quantity === 1}
+					>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							width='16'
@@ -49,8 +75,8 @@ function Item({ item }) {
 							<line x1='5' y1='12' x2='19' y2='12'></line>
 						</svg>
 					</Button>
-					<span className={styles.quantity}>1</span>
-					<Button size='sm' isIconOnly color='primary'>
+					<span className={styles.quantity}>{quantity}</span>
+					<Button size='sm' isIconOnly color='primary' onClick={addQuantity}>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							width='16'
@@ -68,7 +94,7 @@ function Item({ item }) {
 						</svg>
 					</Button>
 				</div>
-				<Button color='primary' endContent={<CartIcon />}>
+				<Button color='primary' endContent={<CartIcon />} onClick={addToCart}>
 					Add to cart
 				</Button>
 			</CardFooter>

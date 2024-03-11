@@ -13,6 +13,7 @@ function Home() {
 	const [categorySelected, setCategorySelected] = useState('');
 	const [sortSelected, setSortSelected] = useState('');
 	const [filteredProducts, setFilteredProducts] = useState([]);
+	const [cart, setCart] = useState([]);
 	const [value] = useDebounce(searchProduct, 500);
 
 	useEffect(() => {
@@ -55,6 +56,28 @@ function Home() {
 	useEffect(() => {
 		filterProducts(products);
 	}, [value, products]);
+
+	const handleAddToCart = (item, quantity) => {
+		const itemInCart = cart.find(product => product.id === item.id);
+
+		if (itemInCart) {
+			const newCart = cart.map(product => {
+				if (product.id === item.id) {
+					return { ...product, quantity: product.quantity + quantity };
+				}
+
+				return product;
+			});
+
+			setCart(newCart);
+			return;
+		}
+
+		const newItem = { ...item, quantity };
+		const newCart = [...cart, newItem];
+
+		setCart(newCart);
+	};
 
 	return (
 		<section className={styles.sectionContainer}>
@@ -100,7 +123,11 @@ function Home() {
 				) : (
 					<>
 						{filteredProducts.map(product => (
-							<Item key={product.id} item={product} />
+							<Item
+								key={product.id}
+								item={product}
+								handleAddToCart={handleAddToCart}
+							/>
 						))}
 					</>
 				)}

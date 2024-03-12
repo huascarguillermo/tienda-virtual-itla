@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
 	Navbar,
 	NavbarBrand,
@@ -11,8 +12,61 @@ import {
 import { Outlet, Link } from 'react-router-dom';
 
 import styles from './default.module.css';
+import {
+	auth,
+	onAuthStateChanged,
+	signOut,
+	db,
+	doc,
+	getDoc
+} from '../services/firebase';
 
 const DefaultLayout = () => {
+	const [userLogged, setUserLogged] = useState(null);
+	const [userData, setUserData] = useState(null);
+
+	useEffect(() => {
+		const listener = onAuthStateChanged(auth, user => {
+			if (user) {
+				setUserLogged(user);
+			} else {
+				setUserLogged(null);
+			}
+
+			return () => {
+				listener();
+			};
+		});
+	}, []);
+
+	useEffect(() => {
+		if (userLogged) {
+			const getUserData = async () => {
+				const userRef = doc(db, 'users', userLogged.uid);
+				const userSnap = await getDoc(userRef);
+
+				if (userSnap.exists()) {
+					setUserData(userSnap.data());
+				} else {
+					setUserData(null);
+				}
+			};
+
+			getUserData();
+		}
+	}, [userLogged]);
+
+	const handleSignOut = () => {
+		signOut(auth)
+			.then(() => {
+				alert('You have been signed out');
+				setUserLogged(null);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	};
+
 	return (
 		<>
 			<Navbar shouldHideOnScroll maxWidth='xl'>
@@ -36,28 +90,42 @@ const DefaultLayout = () => {
 					</Link>
 				</NavbarBrand>
 				<NavbarContent as='div' justify='end'>
-					{/* <Dropdown placement='bottom-end'>
+					<Dropdown placement='bottom-end'>
 						<DropdownTrigger>
 							<Avatar
 								isBordered
 								as='button'
 								className='transition-transform'
 								color='primary'
-								name='JR'
+								name={userData?.fullName || ''}
 								size='sm'
 							/>
 						</DropdownTrigger>
 						<DropdownMenu aria-label='Profile Actions' variant='flat'>
-							<DropdownItem key='profile' className='h-14 gap-2'>
-								<p className='font-semibold'>Signed in as</p>
-								<p className='font-semibold'>zoey@example.com</p>
-							</DropdownItem>
-							<DropdownItem key='logout' color='danger'>
-								Log Out
-							</DropdownItem>
+							{userData && (
+								<DropdownItem key='profile' className='h-14 gap-2'>
+									<p className='font-semibold'>Signed in as</p>
+									<p className='font-semibold'>{userData?.email}</p>
+								</DropdownItem>
+							)}
+
+							{userLogged ? (
+								<DropdownItem
+									key='logout'
+									color='danger'
+									onClick={handleSignOut}
+								>
+									Sign out
+								</DropdownItem>
+							) : (
+								<DropdownItem key='login' color='primary'>
+									<Link to='/login' className='text-default-900'>
+										Login
+									</Link>
+								</DropdownItem>
+							)}
 						</DropdownMenu>
-					</Dropdown> */}
-					<p>JC</p>
+					</Dropdown>
 				</NavbarContent>
 			</Navbar>
 

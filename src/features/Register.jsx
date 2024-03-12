@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { auth } from '../services/firebase';
+import { auth, db } from '../services/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Button, Input } from '@nextui-org/react';
 import { EyeClosed, EyeOpen, MailIcon, Lock } from '../components';
 import { emailValidation } from '../utils/helpers';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 
 function Register() {
+	const [fullName, setFullName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [passwordRepeat, setPasswordRepeat] = useState('');
@@ -18,11 +20,27 @@ function Register() {
 		const isValidEmail = emailValidation(email);
 		const isValidPassword = password === passwordRepeat;
 
-		if (isValidEmail && isValidPassword) {
+		if (isValidEmail && isValidPassword && fullName !== '') {
 			setIsLoading(true);
 			createUserWithEmailAndPassword(auth, email, password)
 				.then(userCredential => {
-					console.log(userCredential);
+					// console.log(userCredential);
+					const user = userCredential.user;
+					const userRef = doc(db, 'users', user.uid);
+					setDoc(userRef, {
+						fullName,
+						email,
+						cart: [],
+						addresses: [],
+						orders: []
+					}).then(() => {
+						alert("You've been registered successfully");
+
+						setTimeout(() => {
+							redirect('/login');
+							resetInput();
+						}, 2000);
+					});
 				})
 				.catch(error => {
 					console.log(error);
@@ -30,6 +48,7 @@ function Register() {
 				.finally(() => {
 					setIsLoading(false);
 				});
+
 			resetInput();
 		} else {
 			alert('Que toyo fue que hiciste');
@@ -39,6 +58,7 @@ function Register() {
 	};
 
 	const resetInput = () => {
+		setFullName('');
 		setEmail('');
 		setPassword('');
 		setPasswordRepeat('');
@@ -47,6 +67,16 @@ function Register() {
 	return (
 		<section>
 			<h1>Register</h1>
+
+			<Input
+				type='text'
+				label='Full Name'
+				variant='bordered'
+				placeholder='Your full name'
+				labelPlacement='outside'
+				value={fullName}
+				onChange={e => setFullName(e.target.value)}
+			/>
 
 			<Input
 				type='email'

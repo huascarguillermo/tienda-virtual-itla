@@ -1,10 +1,30 @@
+import { auth } from '../services/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
-import { Input } from '@nextui-org/react';
+import { Button, Input } from '@nextui-org/react';
 import { EyeClosed, EyeOpen, MailIcon, Lock } from '../components';
+import { emailValidation } from '../utils/helpers';
+import { Link } from 'react-router-dom';
 
 function Login() {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [isVisible, setIsVisible] = useState(false);
 	const handleVisible = () => setIsVisible(!isVisible);
+
+	const handleSubmit = () => {
+		const isValidEmail = emailValidation(email);
+
+		if (isValidEmail && password !== '') {
+			signInWithEmailAndPassword(auth, email, password)
+				.then(userCredential => {
+					console.log(userCredential);
+				})
+				.catch(error => {
+					console.log(error);
+				});
+		}
+	};
 
 	return (
 		<section className='flex w-full flex-wrap md:flex-nowrap gap-4'>
@@ -18,6 +38,8 @@ function Login() {
 				startContent={
 					<MailIcon className='text-2xl text-default-400 pointer-events-none flex-shrink-0' />
 				}
+				value={email}
+				onChange={e => setEmail(e.target.value)}
 			/>
 			<Input
 				label='Password'
@@ -42,7 +64,11 @@ function Login() {
 				}
 				type={isVisible ? 'text' : 'password'}
 				className='max-w-xs'
+				value={password}
+				onChange={e => setPassword(e.target.value)}
 			/>
+			<Button onClick={handleSubmit}>Login</Button>
+			<Link to='/register'>Don&apos;t have an account? Register</Link>
 		</section>
 	);
 }

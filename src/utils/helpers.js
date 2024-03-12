@@ -25,3 +25,9 @@ export function debounce(callback, interval) {
 		}
 	}
 }
+
+export const emailValidation = email => {
+	const re = /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+	return re.test(email);
+}

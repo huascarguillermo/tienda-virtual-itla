@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { Button, Input } from '@nextui-org/react';
 import { EyeClosed, EyeOpen, MailIcon, Lock } from '../components';
 import { emailValidation } from '../utils/helpers';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isVisible, setIsVisible] = useState(false);
+	const navigate = useNavigate();
+
 	const handleVisible = () => setIsVisible(!isVisible);
 
 	const handleSubmit = () => {
@@ -18,12 +20,19 @@ function Login() {
 		if (isValidEmail && password !== '') {
 			signInWithEmailAndPassword(auth, email, password)
 				.then(userCredential => {
-					console.log(userCredential);
+					resetInputs();
+					navigate('/');
 				})
 				.catch(error => {
 					console.log(error);
 				});
 		}
+	};
+
+	const resetInputs = () => {
+		setEmail('');
+		setPassword('');
+		setIsVisible(false);
 	};
 
 	return (

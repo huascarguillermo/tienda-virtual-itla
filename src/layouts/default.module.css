@@ -11,3 +11,7 @@
 .link:hover {
 	background-color: #8ecae6;
 }
+
+.navContent {
+	gap: 30px !important;
+}

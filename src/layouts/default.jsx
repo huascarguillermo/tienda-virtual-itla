@@ -7,11 +7,10 @@ import {
 	DropdownMenu,
 	DropdownItem,
 	Dropdown,
-	DropdownTrigger
+	DropdownTrigger,
+	Badge
 } from '@nextui-org/react';
 import { Outlet, Link } from 'react-router-dom';
-
-import styles from './default.module.css';
 import {
 	auth,
 	onAuthStateChanged,
@@ -20,6 +19,8 @@ import {
 	doc,
 	getDoc
 } from '../services/firebase';
+
+import styles from './default.module.css';
 
 const DefaultLayout = () => {
 	const [userLogged, setUserLogged] = useState(null);
@@ -61,6 +62,7 @@ const DefaultLayout = () => {
 			.then(() => {
 				alert('You have been signed out');
 				setUserLogged(null);
+				setUserData(null);
 			})
 			.catch(err => {
 				console.log(err);
@@ -89,7 +91,27 @@ const DefaultLayout = () => {
 						</svg>
 					</Link>
 				</NavbarBrand>
-				<NavbarContent as='div' justify='end'>
+				<NavbarContent as='div' justify='end' className={styles.navContent}>
+					<Badge content='3' color='primary'>
+						<Link to='/checkout' className={styles.cartIcon}>
+							<svg
+								xmlns='http://www.w3.org/2000/svg'
+								width='24'
+								height='24'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								className='feather feather-shopping-cart'
+							>
+								<circle cx='9' cy='21' r='1'></circle>
+								<circle cx='20' cy='21' r='1'></circle>
+								<path d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'></path>
+							</svg>
+						</Link>
+					</Badge>
 					<Dropdown placement='bottom-end'>
 						<DropdownTrigger>
 							<Avatar

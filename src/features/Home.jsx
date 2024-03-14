@@ -16,8 +16,6 @@ function Home() {
 	const [cart, setCart] = useState([]);
 	const [value] = useDebounce(searchProduct, 500);
 
-	console.log({ cart });
-
 	useEffect(() => {
 		setIsLoading(true);
 

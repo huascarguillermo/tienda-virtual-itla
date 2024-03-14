@@ -5,7 +5,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Button, Input } from '@nextui-org/react';
 import { EyeClosed, EyeOpen, MailIcon, Lock } from '../components';
 import { emailValidation } from '../utils/helpers';
-import { Link, redirect } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
 	const [fullName, setFullName] = useState('');
@@ -14,11 +14,22 @@ function Register() {
 	const [passwordRepeat, setPasswordRepeat] = useState('');
 	const [isVisible, setIsVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const navigate = useNavigate();
+
 	const handleVisible = () => setIsVisible(!isVisible);
 
 	const handleSubmit = () => {
 		const isValidEmail = emailValidation(email);
 		const isValidPassword = password === passwordRepeat;
+
+		const newUser = {
+			fullName,
+			email,
+			cart: [],
+			addresses: [],
+			orders: []
+		};
 
 		if (isValidEmail && isValidPassword && fullName !== '') {
 			setIsLoading(true);
@@ -27,18 +38,11 @@ function Register() {
 					// console.log(userCredential);
 					const user = userCredential.user;
 					const userRef = doc(db, 'users', user.uid);
-					setDoc(userRef, {
-						fullName,
-						email,
-						cart: [],
-						addresses: [],
-						orders: []
-					}).then(() => {
+					setDoc(userRef, newUser).then(() => {
 						alert("You've been registered successfully");
-
+						resetInput();
 						setTimeout(() => {
-							redirect('/login');
-							resetInput();
+							navigate('/');
 						}, 2000);
 					});
 				})
@@ -51,7 +55,6 @@ function Register() {
 
 			resetInput();
 		} else {
-			alert('Que toyo fue que hiciste');
 			resetInput();
 			setIsLoading(false);
 		}
